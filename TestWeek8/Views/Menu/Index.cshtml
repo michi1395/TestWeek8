@@ -1,0 +1,55 @@
+﻿@model IEnumerable<MenuViewModel>
+
+@if (User.IsInRole("Administator"))
+{
+    <a asp-controller="Menu" asp-action="Create">New Menu</a>
+}
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(item.Name, "Detail", "Menus", new { code = item.Name })</td>
+                <td>@item.Name</td>
+                <td>
+                    <a href="#" onclick="deleteMenu(@item.Id); return false;"> Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        //javscript code
+        function deleteEmployee(menuId) {
+            let confirmation = confirm("Are you sure you want to delete Menu #"
+                + menuId + "?");
+            if (!confirmation) {
+                return;
+            }
+            //cancellazione employee
+            $.ajax({
+                type: 'GET',
+                url: `@Url.Action("Delete", "Menus")/${menuId}`,
+                contentType: 'application/json; charset=utf-8',
+                success: (data) => {
+                    if (data) {
+                        location.href = "@Url.Action("Index", "Menus")"
+                    }
+                }
+            });
+        }
+    </script>
+
+
+}
